@@ -452,7 +452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damping: {x: 0, y: 0.5, z: 0.3}
-  ShoulderOffset: {x: 0, y: 1.66, z: -1.59}
+  ShoulderOffset: {x: 0, y: 1.66, z: -3}
   VerticalArmLength: 0.4
   CameraSide: 1
   CameraDistance: 2
@@ -490,7 +490,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4382044228790862292, guid: d7cb35e935c1d3043abea908ef01d3ac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.16
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 4382044228790862292, guid: d7cb35e935c1d3043abea908ef01d3ac, type: 3}
       propertyPath: m_LocalPosition.y
@@ -527,6 +527,10 @@ PrefabInstance:
     - target: {fileID: 4382044228790862292, guid: d7cb35e935c1d3043abea908ef01d3ac, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6342384481213432373, guid: d7cb35e935c1d3043abea908ef01d3ac, type: 3}
+      propertyPath: sceneViewId
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7cb35e935c1d3043abea908ef01d3ac, type: 3}
@@ -648,7 +652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f78708cf07367914195e6b181fe1c4af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blowWindThreshold: 8
+  blowWindThreshold: 50
   blowWindDuration: 3
   windForce: 25
 --- !u!65 &710474691

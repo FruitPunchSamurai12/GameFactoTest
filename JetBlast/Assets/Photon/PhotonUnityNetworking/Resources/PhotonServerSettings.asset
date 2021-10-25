@@ -40,6 +40,10 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - RPC_ChangeReadyState
+  - RPC_HandlePlayerPushed
+  - RPC_TogglePlayerInCoverRange
+  - RPC_Push
+  - RPC_PunchAnimation
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
