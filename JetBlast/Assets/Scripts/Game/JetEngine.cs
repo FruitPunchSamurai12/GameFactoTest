@@ -11,21 +11,23 @@ public class JetEngine : MonoBehaviour
     [SerializeField]
     float windForce = 25f;
 
-    float timer = 0;
+    public float Timer { get; private set; }
+
+    public float TimeLeft => Timer > blowWindThreshold ? blowWindThreshold + blowWindDuration - Timer : blowWindThreshold - Timer;
 
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if(timer>blowWindThreshold)
+        Timer += Time.deltaTime;
+        if(Timer>blowWindThreshold)
         {
             foreach (var pc in GameManager.Instance.GetPlayers())
             {
                 if (pc!=null && !pc.InCover)
-                    pc.GetBlownAway((pc.transform.position - transform.position).normalized * windForce);
+                    pc.GetBlownAway((new Vector3(0,1,-.1f)).normalized * windForce);
             }
-            if (timer > blowWindThreshold + blowWindDuration)
-                timer = 0;
+            if (Timer > blowWindThreshold + blowWindDuration)
+                Timer = 0;
         }
     }
 }

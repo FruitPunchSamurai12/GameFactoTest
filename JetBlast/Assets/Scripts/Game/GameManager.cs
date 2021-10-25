@@ -32,11 +32,20 @@ public class GameManager : MonoBehaviourPunCallbacks
             GameObject p = PhotonNetwork.Instantiate(playerPrefab.name, playerSpawnPoints[index].transform.position, Quaternion.identity);
             virtualCamera.m_Follow = p.transform;
         }
+        FindObjectOfType<WinZone>().onGameEnd += GameEnd;
     }
 
     public void AddPlayerController(PlayerController pc)
     {
         playerControllers.Add(pc);
+    }
+
+    void GameEnd(int winnerPlayerNumber)
+    {
+        foreach (var pc in playerControllers)
+        {
+            pc.GameEnd(winnerPlayerNumber);
+        }
     }
 
     public List<PlayerController> GetPlayers() => playerControllers;

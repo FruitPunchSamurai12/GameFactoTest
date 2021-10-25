@@ -11,16 +11,25 @@ public class PlayerAnimation : MonoBehaviourPunCallbacks
     PlayerController playerController;
 
 
-    private void Awake()
+    void Awake()
     {
         animator = GetComponent<Animator>();
         playerController = GetComponent<PlayerController>();
+        playerController.onGameEnd += GameEndAnimation;
         playerController.onVault += () => animator.SetTrigger("Vault");
         playerController.onStunEnd += () => animator.SetTrigger("Stand");
         playerController.onThrowPunch += PunchAnimation;
     }
 
-    private void PunchAnimation(bool leftPunch)
+    void GameEndAnimation(bool winner)
+    {
+        if (winner)
+            animator.SetTrigger("Win");
+        else
+            animator.SetTrigger("Defeat");
+    }
+
+    void PunchAnimation(bool leftPunch)
     {
         photonView.RPC(nameof(RPC_PunchAnimation), RpcTarget.All, leftPunch);
     }
@@ -32,7 +41,7 @@ public class PlayerAnimation : MonoBehaviourPunCallbacks
         animator.SetBool("Left", leftPunch);
     }
 
-    private void Update()
+    void Update()
     {
         if (!photonView.IsMine)
             return;

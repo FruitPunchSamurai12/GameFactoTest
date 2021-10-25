@@ -9,11 +9,13 @@ public class TestConnect : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-        PhotonNetwork.NickName = MasterManager.GameSettings.NickName;
-        PhotonNetwork.GameVersion = MasterManager.GameSettings.GameVersion;
-        PhotonNetwork.ConnectUsingSettings();
-
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.NickName = MasterManager.GameSettings.NickName;
+            PhotonNetwork.GameVersion = MasterManager.GameSettings.GameVersion;
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     public override void OnConnectedToMaster()

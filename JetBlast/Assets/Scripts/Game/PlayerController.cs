@@ -2,6 +2,7 @@
 using Photon.Pun;
 using UnityEngine;
 using System.Collections;
+using Photon.Pun.UtilityScripts;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviourPunCallbacks
@@ -48,10 +49,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public bool Moving => playerInput.Move;
     public float Speed { get; private set; }
     public float MaxSpeed => maxSpeed;
+
+    
+
     public Vector3 Direction { get; private set; }
     public bool Dead { get; private set; }
     public bool InCover { get; private set; }
 
+    public event Action<bool> onGameEnd;
     public event Action onVault;
     public event Action<PlayerController> onPushed;
     public event Action onStunEnd;
@@ -208,7 +213,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
         StartCoroutine(Pushed());
     }
 
-
     IEnumerator Pushed()
     {
         //Speed = pushSpeed;
@@ -222,5 +226,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
         ragdoll.transform.SetParent(transform);
         animatedModel.SetActive(true);
         ragdoll.SetActive(false);
+    }
+
+    public void GameEnd(int winnerPlayerNumber)
+    {
+        if (winnerPlayerNumber == photonView.Controller.GetPlayerNumber())
+            onGameEnd?.Invoke(true);
+        else
+            onGameEnd?.Invoke(false);
+        //i know it doesnt make sense but it does what i want which is restricting input and i dont have to create another bool
+        Dead = true;
     }
 }
