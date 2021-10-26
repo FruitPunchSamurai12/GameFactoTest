@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cover : MonoBehaviourPunCallbacks
+public class Cover : PooledMonoBehaviour
 {
     bool occupied = false;
     int occupiedPlayerID = -1;

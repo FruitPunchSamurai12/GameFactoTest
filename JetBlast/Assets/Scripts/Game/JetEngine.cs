@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,21 +13,32 @@ public class JetEngine : MonoBehaviour
 
     public float Timer { get; private set; }
 
+    public bool StrongWind { get; private set; }
     public float TimeLeft => Timer > blowWindThreshold ? blowWindThreshold + blowWindDuration - Timer : blowWindThreshold - Timer;
 
-    // Update is called once per frame
+    public event Action onWindReset;
+    public event Action onStrongWind;
+
+    
     void Update()
     {
         Timer += Time.deltaTime;
-        if(Timer>blowWindThreshold)
+        if (Timer > blowWindThreshold)
         {
+            if (!StrongWind)
+                onStrongWind?.Invoke();
+            StrongWind = true;
             foreach (var pc in GameManager.Instance.GetPlayers())
             {
-                if (pc!=null && !pc.InCover)
-                    pc.GetBlownAway((new Vector3(0,1,-.1f)).normalized * windForce);
+                if (pc != null && !pc.InCover)
+                    pc.GetBlownAway((new Vector3(0, 1, -.1f)).normalized * windForce);
             }
             if (Timer > blowWindThreshold + blowWindDuration)
+            {
                 Timer = 0;
+                StrongWind = false;
+                onWindReset?.Invoke();
+            }
         }
     }
 }

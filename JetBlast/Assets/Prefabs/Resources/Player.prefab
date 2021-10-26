@@ -3776,15 +3776,16 @@ MonoBehaviour:
   deacceleration: 20
   leftRightInputOffset: 20
   vaultSpeed: 10
-  vaultDuration: 0.5
+  vaultDuration: 0.3
   checkForVaultRayLength: 0.1
   coverLayerMask:
     serializedVersion: 2
     m_Bits: 256
   rayStartPosition: {fileID: 4769214726083066328}
-  pushSpeed: 25
-  pushedDuration: 0.2
+  pushForce: 20
   stunDuration: 2
+  boostMaxSpeedModifier: 1.2
+  speedBoostDuration: 3
 --- !u!114 &6559926557311160792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3849,6 +3850,12 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 0
     Name: Left
+  - Type: 9
+    SynchronizeType: 0
+    Name: Win
+  - Type: 9
+    SynchronizeType: 0
+    Name: Defeat
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0

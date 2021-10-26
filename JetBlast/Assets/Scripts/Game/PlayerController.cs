@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Rigidbody ragdollHead;
     [SerializeField]
     float maxSpeed = 8f;
+
     [SerializeField]
     float acceleration = 10f;
     [SerializeField]
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     float vaultDuration = .5f;
     [SerializeField]
     float checkForVaultRayLength = .5f;
+
     [SerializeField]
     LayerMask coverLayerMask;
     [SerializeField]
@@ -38,11 +40,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     [Header("Push things")]
     [SerializeField]
-    float pushSpeed = 20f;
-    [SerializeField]
-    float pushedDuration = .3f;
+    float pushForce = 20f;
     [SerializeField]
     float stunDuration = 1f;
+
+    [Header("Speed boost things")]
+    [SerializeField]
+    float boostMaxSpeedModifier = 1.2f;
+    [SerializeField]
+    float speedBoostDuration = 3f;
 
     public bool Stunned { get; private set; }
 
@@ -64,6 +70,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public static GameObject LocalPlayerInstance { get; private set; }
 
     bool vaulting = false;
+    float currentMaxSpeedModifier = 1;
 
     Camera cam;
     Rigidbody rb;
@@ -117,7 +124,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             Speed = Speed - deacceleration * Time.deltaTime;
             Direction = transform.forward;
         }
-        Speed = Mathf.Clamp(Speed, 0, maxSpeed);
+        Speed = Mathf.Clamp(Speed, 0, maxSpeed*currentMaxSpeedModifier);
 
     }
 
@@ -145,7 +152,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
             animatedModel.SetActive(false);
             ragdoll.SetActive(true);
         }
-        
+        if (PhotonNetwork.IsMasterClient)
+            force = force / 2f;//i dont know why but on the master client the ragdoll travels much higher in the air than in the other clients
+
         foreach (var rb in ragdollRigidBodies)
         {
             rb.AddForceAtPosition(force, rb.transform.position, ForceMode.Acceleration);
@@ -209,15 +218,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
         animatedModel.SetActive(false);
         ragdoll.SetActive(true);
         ragdoll.transform.SetParent(null);
-        ragdollHead.AddForceAtPosition(dir * pushSpeed, ragdollHead.transform.position, ForceMode.VelocityChange);      
+        ragdollHead.AddForceAtPosition(dir * pushForce, ragdollHead.transform.position, ForceMode.VelocityChange);      
         StartCoroutine(Pushed());
     }
 
     IEnumerator Pushed()
     {
-        //Speed = pushSpeed;
         Stunned = true;
-        //yield return new WaitForSeconds(pushedDuration);
         Speed = 0;
         yield return new WaitForSeconds(stunDuration);
         Stunned = false;
@@ -234,7 +241,35 @@ public class PlayerController : MonoBehaviourPunCallbacks
             onGameEnd?.Invoke(true);
         else
             onGameEnd?.Invoke(false);
+        
         //i know it doesnt make sense but it does what i want which is restricting input and i dont have to create another bool
         Dead = true;
+    }
+
+    public void KnockOut(Vector3 force)
+    {
+        if (!Dead)
+        {
+            Dead = true;
+            animatedModel.SetActive(false);
+            ragdoll.SetActive(true);
+        }
+
+        foreach (var rb in ragdollRigidBodies)
+        {
+            rb.AddForce(force, ForceMode.VelocityChange);
+        }
+    }
+
+    public void GottaGoFast()
+    {
+        StartCoroutine(SpeedUp());
+    }
+
+    IEnumerator SpeedUp()
+    {
+        currentMaxSpeedModifier = boostMaxSpeedModifier;
+        yield return new WaitForSeconds(speedBoostDuration);
+        currentMaxSpeedModifier = 1;
     }
 }

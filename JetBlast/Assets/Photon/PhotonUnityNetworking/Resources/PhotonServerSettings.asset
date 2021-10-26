@@ -45,6 +45,11 @@ MonoBehaviour:
   - RPC_Push
   - RPC_PunchAnimation
   - RPC_SendGameEndEvent
+  - RPC_SpawnCovers
+  - RPC_InitializePools
+  - RPC_InitializePooledObject
+  - RPC_EnableObject
+  - RPC_ToggleObject
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

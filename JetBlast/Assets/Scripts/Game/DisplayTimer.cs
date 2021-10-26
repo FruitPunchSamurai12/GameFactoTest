@@ -20,6 +20,7 @@ public class DisplayTimer :MonoBehaviour
     private void Update()
     {
         var timeLeft = jetEngine.TimeLeft;
+        timerText.color = jetEngine.StrongWind ? Color.red : Color.white;
         timerText.SetText(Math.Round(timeLeft, 1).ToString());
     }
 }

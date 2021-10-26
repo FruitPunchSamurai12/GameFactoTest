@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1839968636156499042
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1839968636156499044}
+  - component: {fileID: 1839968636156499043}
+  - component: {fileID: 6760659298332115253}
+  m_Layer: 0
+  m_Name: SpawnManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1839968636156499044
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839968636156499042}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1839968636156499043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839968636156499042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2885662b6405bc4e849c049d4a1393b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coverPrefab: {fileID: 4382044228790862293, guid: d7cb35e935c1d3043abea908ef01d3ac, type: 3}
+  obstacles:
+  - {fileID: 9157980360727231745, guid: 30cf1f9b3aa95f546b8b73faefd4b76b, type: 3}
+  - {fileID: 9170972341556108045, guid: 93fb31a6fad68db49b5aa9ab6cd0a2f3, type: 3}
+  - {fileID: 1970272611679395405, guid: 3bc8b8da33a14d248a182907b98e69de, type: 3}
+  speedBoostPrefab: {fileID: 8755855960482264257, guid: b8d5ca185c730fe428ac33d1fb503227, type: 3}
+  minX: -4
+  maxX: 4
+  zPositionToSpawnObstacles: 110
+  yMinPositionToSpawnObstacles: 10
+  yMaxPositionToSpawnObstacles: 20
+  minTimeForNextObstacle: 0.5
+  maxTimeForNextObstacle: 2
+  minDistanceFromFurthestCoverToSpawnCovers: 8
+  maxDistanceFromFurthestCoverToSpawnCovers: 24
+  maxZPositionCoverOrSpeedBoostCanSpawn: 90
+  minDistanceBetweenCovers: 3
+  minSpeedBoostsToSpawn: 2
+  maxSpeedBoostsToSpawn: 4
+  minDistanceBetweenSpeedBoosts: 8
+  minZDistanceOfSpeedBoostsFromLastPlayer: 8
+  maxZDistanceOfSpeedBoostsFromLastPlayer: 48
+--- !u!114 &6760659298332115253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839968636156499042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

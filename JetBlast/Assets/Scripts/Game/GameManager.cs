@@ -1,9 +1,10 @@
 ﻿using Photon.Pun;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun.UtilityScripts;
 using Cinemachine;
+using System.Linq;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -14,7 +15,15 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField]
     CinemachineVirtualCamera virtualCamera;
 
+    int MaxPlayers =1;
+    int currentPlayersConnected = 0;
+    public event Action onGameStart;
+
     List<PlayerController> playerControllers = new List<PlayerController>();
+
+    public int PlayersRemaining => playerControllers.Count(t => !t.Dead);
+    public float LastPlayerZ => playerControllers.Where(t=>!t.Dead).Min(t => t.transform.position.z);
+    public float FirstPlayerZ => playerControllers.Where(t=>!t.Dead).Max(t => t.transform.position.z);
 
     public static GameManager Instance { get; private set; }
 
@@ -38,6 +47,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void AddPlayerController(PlayerController pc)
     {
         playerControllers.Add(pc);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            currentPlayersConnected++;
+            if (currentPlayersConnected == MaxPlayers)
+                onGameStart?.Invoke();
+        }
     }
 
     void GameEnd(int winnerPlayerNumber)
