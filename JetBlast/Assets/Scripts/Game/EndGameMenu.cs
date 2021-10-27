@@ -27,6 +27,7 @@ public class EndGameMenu : MonoBehaviourPun
         {
             nameOfWinnerText.SetText("You won!");
             messageToPlayerText.SetText("Congrats!");
+            AudioManager.Instance.PlaySoundEffect2D("Victory");
         }
         else
         {
@@ -41,6 +42,7 @@ public class EndGameMenu : MonoBehaviourPun
 
     public void OnClickBackToMenu()
     {
+        AudioManager.Instance.PlaySoundEffect2D("Button");
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene(0);
     }

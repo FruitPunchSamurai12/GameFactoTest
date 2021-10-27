@@ -16,6 +16,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         onJoinRoom?.Invoke();
+
     }
 
     public void OnClickCreateRoom()

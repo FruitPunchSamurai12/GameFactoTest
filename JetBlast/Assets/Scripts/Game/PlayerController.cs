@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public event Action onVault;
     public event Action<PlayerController> onPushed;
     public event Action onStunEnd;
+    public event Action onRagdoll;
     public event Action<bool> onThrowPunch;
     public static GameObject LocalPlayerInstance { get; private set; }
 
@@ -148,9 +149,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if(!Dead)
         {
+            AudioManager.Instance.PlaySoundEffect3D("WindDeath", transform.position);
             Dead = true;
             animatedModel.SetActive(false);
             ragdoll.SetActive(true);
+            onRagdoll?.Invoke();
         }
         if (PhotonNetwork.IsMasterClient)
             force = force / 2f;//i dont know why but on the master client the ragdoll travels much higher in the air than in the other clients
@@ -188,12 +191,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
         {
             if(InCover && !Moving)
             {
-                GetPushed(pc);
+                GetPunched(pc);
             }
         }
     }
 
-    private void GetPushed(PlayerController pc)
+    private void GetPunched(PlayerController pc)
     {
         onPushed?.Invoke(pc);
         Vector3 forward = pc.transform.forward.FlatVector();
@@ -202,27 +205,29 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (cross.y > 0)
         {
             pc.onThrowPunch?.Invoke(false);
-            photonView.RPC(nameof(RPC_Push), RpcTarget.All, false);
+            photonView.RPC(nameof(RPC_Punch), RpcTarget.All, false);
         }
         else
         {
             pc.onThrowPunch?.Invoke(true);
-            photonView.RPC(nameof(RPC_Push), RpcTarget.All, true);
+            photonView.RPC(nameof(RPC_Punch), RpcTarget.All, true);
         }
     }
 
     [PunRPC]
-    void RPC_Push(bool leftDirection)
+    void RPC_Punch(bool leftDirection)
     {
         Vector3 dir = (leftDirection ? -transform.right : transform.right - transform.up + transform.forward).normalized;
         animatedModel.SetActive(false);
+        onRagdoll?.Invoke();
         ragdoll.SetActive(true);
         ragdoll.transform.SetParent(null);
-        ragdollHead.AddForceAtPosition(dir * pushForce, ragdollHead.transform.position, ForceMode.VelocityChange);      
-        StartCoroutine(Pushed());
+        ragdollHead.AddForceAtPosition(dir * pushForce, ragdollHead.transform.position, ForceMode.VelocityChange);
+        AudioManager.Instance.PlaySoundEffect3D("PunchReaction", ragdollHead.transform.position);
+        StartCoroutine(Punched());
     }
 
-    IEnumerator Pushed()
+    IEnumerator Punched()
     {
         Stunned = true;
         Speed = 0;
@@ -250,8 +255,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if (!Dead)
         {
+            AudioManager.Instance.PlaySoundEffect3D("ObstacleHitReaction", transform.position);
             Dead = true;
             animatedModel.SetActive(false);
+            onRagdoll?.Invoke();
             ragdoll.SetActive(true);
         }
 

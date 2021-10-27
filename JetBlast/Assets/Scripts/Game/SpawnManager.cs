@@ -71,6 +71,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         {
             obs.InitializePool();
         }
+        speedBoostPrefab.InitializePool();
     }
 
 

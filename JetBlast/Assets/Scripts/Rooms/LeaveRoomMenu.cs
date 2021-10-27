@@ -14,6 +14,7 @@ public class LeaveRoomMenu : MonoBehaviourPunCallbacks
 
     public void OnClickLeaveRoom()
     {
+        AudioManager.Instance.PlaySoundEffect2D("Button");
         PhotonNetwork.LeaveRoom(true);
         onLeaveRoom?.Invoke();
     }

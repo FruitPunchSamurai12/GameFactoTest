@@ -19,6 +19,7 @@ public class RoomListing:MonoBehaviour
     public void OnClickButton()
     {
         PhotonNetwork.JoinRoom(RoomInfo.Name);
+        AudioManager.Instance.PlaySoundEffect2D("Button");
     }
 
 }

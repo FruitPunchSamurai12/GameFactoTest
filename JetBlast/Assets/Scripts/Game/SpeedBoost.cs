@@ -14,6 +14,7 @@ public class SpeedBoost : PooledMonoBehaviour
             if(pv.IsMine)
             {
                 pc.GottaGoFast();
+                AudioManager.Instance.PlaySoundEffect3D("SpeedBoost", transform.position);
                 ReturnToPool();
             }
         }

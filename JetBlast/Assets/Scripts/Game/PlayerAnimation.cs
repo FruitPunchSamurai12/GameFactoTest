@@ -17,7 +17,8 @@ public class PlayerAnimation : MonoBehaviourPunCallbacks
         playerController = GetComponent<PlayerController>();
         playerController.onGameEnd += GameEndAnimation;
         playerController.onVault += () => animator.SetTrigger("Vault");
-        playerController.onStunEnd += () => animator.SetTrigger("Stand");
+        playerController.onRagdoll += () => animator.enabled = false;
+        playerController.onStunEnd += () => animator.enabled = true; animator.SetTrigger("Stand");
         playerController.onThrowPunch += PunchAnimation;
     }
 

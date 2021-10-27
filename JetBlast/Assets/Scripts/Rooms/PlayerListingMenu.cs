@@ -28,9 +28,9 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
     {
         ready = state;
         if (ready)
-            readyText.SetText("R");
+            readyText.SetText("Ready");
         else
-            readyText.SetText("N");
+            readyText.SetText("Not Ready");
     }
 
 
@@ -48,6 +48,7 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         AddPlayerListing(newPlayer);
+        AudioManager.Instance.PlaySoundEffect2D("PlayerJoin");
     }
 
     private void AddPlayerListing(Player p)
@@ -85,6 +86,7 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
             }
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
+            AudioManager.Instance.PlaySoundEffect2D("Start");
             PhotonNetwork.LoadLevel(1);
         }
     }
@@ -94,6 +96,7 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
         if(!PhotonNetwork.IsMasterClient)
         {
             SetReady(!ready);
+            AudioManager.Instance.PlaySoundEffect2D("Button");
             base.photonView.RPC(nameof(RPC_ChangeReadyState), RpcTarget.MasterClient,PhotonNetwork.LocalPlayer, ready);
         }
     }

@@ -11,6 +11,10 @@ public class JetEngine : MonoBehaviour
     [SerializeField]
     float windForce = 25f;
 
+    AudioSource audioSource;
+
+    bool startWind = false;
+
     public float Timer { get; private set; }
 
     public bool StrongWind { get; private set; }
@@ -19,9 +23,33 @@ public class JetEngine : MonoBehaviour
     public event Action onWindReset;
     public event Action onStrongWind;
 
-    
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Start()
+    {
+        GameManager.Instance.onGameStart += HandleGameStart;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.onGameStart -= HandleGameStart;
+    }
+
+    void HandleGameStart()
+    {
+        startWind = true;
+        audioSource.clip = AudioManager.Instance.GetSoundEffect("Wind");
+        audioSource.volume = AudioManager.Instance.sfxON ? 1 : 0;
+        audioSource.Play();
+    }
+
     void Update()
     {
+        if (!startWind)
+            return;
         Timer += Time.deltaTime;
         if (Timer > blowWindThreshold)
         {
