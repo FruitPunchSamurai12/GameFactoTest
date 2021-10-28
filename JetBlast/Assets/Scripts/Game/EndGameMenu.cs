@@ -15,9 +15,26 @@ public class EndGameMenu : MonoBehaviourPun
     [SerializeField]
     TextMeshProUGUI messageToPlayerText;
 
+    WinZone winZone;
+
     void Start()
     {
-        FindObjectOfType<WinZone>().onGameEnd += HandleGameEnd;
+        winZone = FindObjectOfType<WinZone>();
+        winZone.onGameEnd += HandleGameEnd;
+        GameManager.Instance.onLocalPlayerDeath += HandleLocalPlayerDeath;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.onLocalPlayerDeath -= HandleLocalPlayerDeath;
+    }
+
+    void HandleLocalPlayerDeath()
+    {
+        winZone.onGameEnd -= HandleGameEnd;
+        endGamePanel.SetActive(true);
+        nameOfWinnerText.SetText("You died horribly!");
+        messageToPlayerText.SetText("Better luck next time!");
     }
 
     void HandleGameEnd(int winnerPlayerNumber)
@@ -27,7 +44,7 @@ public class EndGameMenu : MonoBehaviourPun
         {
             nameOfWinnerText.SetText("You won!");
             messageToPlayerText.SetText("Congrats!");
-            AudioManager.Instance.PlaySoundEffect2D("Victory");
+            AudioManager.Instance.PlaySoundEffect3D("Victory",PlayerController.LocalPlayerInstance.transform.position);
         }
         else
         {

@@ -14,14 +14,14 @@ public class Pool : MonoBehaviourPunCallbacks
 
     public static void InitializePool(PooledMonoBehaviour prefab)
     {
-        var pool = PhotonNetwork.Instantiate("Pool", Vector3.zero, Quaternion.identity).GetComponent<Pool>();
+        var pool = PhotonNetwork.InstantiateRoomObject("Pool", Vector3.zero, Quaternion.identity).GetComponent<Pool>();
         pool.prefab = prefab;
 
         pools.Add(prefab, pool);
         for (int i = 0; i < prefab.InitialPoolSize; i++)
         {
             //on the client when an object is pulled from the pool it first becomes active before changing position and you can see it in the middle of the level for a brief second. that's why i initialize them far away
-            var pooledObjectView = PhotonNetwork.Instantiate(prefab.name, new Vector3(-100,-100,-100), Quaternion.identity).GetComponent<PhotonView>();
+            var pooledObjectView = PhotonNetwork.InstantiateRoomObject(prefab.name, new Vector3(-100,-100,-100), Quaternion.identity).GetComponent<PhotonView>();
             pool.photonView.RPC(nameof(RPC_InitializePooledObject), RpcTarget.All, pooledObjectView.ViewID);
         }
     }
@@ -79,5 +79,11 @@ public class Pool : MonoBehaviourPunCallbacks
     {
         pooledObject.transform.SetParent(this.transform);
         objects.Enqueue(pooledObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (prefab !=null && pools.ContainsKey(prefab))
+            pools.Remove(prefab);
     }
 }

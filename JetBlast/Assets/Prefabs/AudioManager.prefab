@@ -308,7 +308,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 275a8a25055547b45a6f3ca4fcc0980c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgMusic: []
+  bgMusic:
+  - name: Menu
+    clip: {fileID: 8300000, guid: 9e20509dcb2109b4593f45c652c1c136, type: 3}
+  - name: Game
+    clip: {fileID: 8300000, guid: 6c612e3191d781249aba20917e642a60, type: 3}
   soundEffects:
   - name: Button
     clip: {fileID: 8300000, guid: ad8fb250f7932e44bb76e055cbaba445, type: 3}

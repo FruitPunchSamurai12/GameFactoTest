@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Photon.Pun;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JetEngine : MonoBehaviour
+public class JetEngine : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     float blowWindThreshold = 5f;
@@ -30,15 +31,23 @@ public class JetEngine : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.onGameStart += HandleGameStart;
+        if (PhotonNetwork.IsMasterClient)
+            GameManager.Instance.onGameStart += HandleGameStart;
     }
 
     private void OnDestroy()
     {
-        GameManager.Instance.onGameStart -= HandleGameStart;
+        if (PhotonNetwork.IsMasterClient)
+            GameManager.Instance.onGameStart -= HandleGameStart;
     }
 
     void HandleGameStart()
+    {
+        photonView.RPC(nameof(RPC_HandleGameStart), RpcTarget.All);
+    }
+
+    [PunRPC]
+    void RPC_HandleGameStart()
     {
         startWind = true;
         audioSource.clip = AudioManager.Instance.GetSoundEffect("Wind");

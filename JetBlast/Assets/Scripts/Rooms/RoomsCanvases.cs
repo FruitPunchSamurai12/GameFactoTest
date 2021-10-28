@@ -10,6 +10,14 @@ public class RoomsCanvases : MonoBehaviour
     [SerializeField]
     CanvasGroup currentRoom;
 
+    [SerializeField]
+    CanvasGroup loadScreen;
+
+    public void Connected()
+    {
+        HideCanvasGroup(loadScreen);
+        ShowCanvasGroup(createOrJoinRoom);
+    }
 
     public void EnterRoom()
     {

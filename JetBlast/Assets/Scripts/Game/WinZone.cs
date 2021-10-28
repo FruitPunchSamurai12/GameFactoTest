@@ -17,6 +17,8 @@ public class WinZone : MonoBehaviourPun
         }
     }
 
+   
+
     [PunRPC]
     void RPC_SendGameEndEvent(int winnerPlayerNumber)
     {

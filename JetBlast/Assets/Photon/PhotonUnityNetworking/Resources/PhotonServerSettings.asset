@@ -51,6 +51,11 @@ MonoBehaviour:
   - RPC_EnableObject
   - RPC_ToggleObject
   - RPC_Punch
+  - RPC_HandleGameStart
+  - RPC_PlayerLoadSceneMessage
+  - RPC_AllowInputOnLocalPlayer
+  - RPC_MasterClientAllPlayersLoadSceneReceive
+  - RPC_StartTimer
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

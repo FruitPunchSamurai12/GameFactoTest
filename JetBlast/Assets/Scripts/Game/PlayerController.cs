@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public event Action<PlayerController> onPushed;
     public event Action onStunEnd;
     public event Action onRagdoll;
+    public event Action onDeath;
     public event Action<bool> onThrowPunch;
     public static GameObject LocalPlayerInstance { get; private set; }
 
@@ -78,6 +79,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Rigidbody[] ragdollRigidBodies;
     PlayerInput playerInput = new PlayerInput();
     float startYPosition;//used when getting up after being pushed
+    bool gameStarted = false;
 
     private void Awake()
     {
@@ -92,14 +94,23 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        GameManager.Instance.AddPlayerController(this);       
+        GameManager.Instance.AddPlayerController(this,photonView.IsMine);
     }
+
+    private void OnDestroy()
+    {
+        if (photonView.IsMine)
+            LocalPlayerInstance = null;
+    }
+
+
+    public void HandleGameStart() => gameStarted = true;
 
     private void Update()
     {
         if (!photonView.IsMine)
             return;
-        if (Dead || Stunned)
+        if (Dead || Stunned || !gameStarted)
             return;
         if(vaulting)
         {
@@ -133,13 +144,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine)
             return;
-        if (Dead || Stunned )
+        if (Dead || Stunned ||!gameStarted)
             return;
         rb.MovePosition(transform.position + Direction * Speed*Time.deltaTime);
         if(InCover && !vaulting && Moving)
         {
             if(Physics.Raycast(rayStartPosition.position, transform.forward,checkForVaultRayLength,coverLayerMask))
             {
+                Debug.Log("ktis");
                 Vault();
             }
         }
@@ -151,6 +163,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         {
             AudioManager.Instance.PlaySoundEffect3D("WindDeath", transform.position);
             Dead = true;
+            onDeath?.Invoke();
             animatedModel.SetActive(false);
             ragdoll.SetActive(true);
             onRagdoll?.Invoke();
@@ -217,12 +230,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPC_Punch(bool leftDirection)
     {
-        Vector3 dir = (leftDirection ? -transform.right : transform.right - transform.up + transform.forward).normalized;
+        Vector3 dir = leftDirection ? Vector3.left : Vector3.right;
         animatedModel.SetActive(false);
         onRagdoll?.Invoke();
         ragdoll.SetActive(true);
         ragdoll.transform.SetParent(null);
-        ragdollHead.AddForceAtPosition(dir * pushForce, ragdollHead.transform.position, ForceMode.VelocityChange);
+        ragdollHead.AddForce(dir * pushForce, ForceMode.VelocityChange);
         AudioManager.Instance.PlaySoundEffect3D("PunchReaction", ragdollHead.transform.position);
         StartCoroutine(Punched());
     }
@@ -257,6 +270,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         {
             AudioManager.Instance.PlaySoundEffect3D("ObstacleHitReaction", transform.position);
             Dead = true;
+            onDeath?.Invoke();
+            StopCoroutine(Punched());
             animatedModel.SetActive(false);
             onRagdoll?.Invoke();
             ragdoll.SetActive(true);

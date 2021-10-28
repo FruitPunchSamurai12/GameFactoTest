@@ -62,6 +62,8 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     float furthestCoverZ =0;
     bool stopSpawningCovers = false;
 
+    bool gameStarted = false;
+
     private void Awake()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -84,18 +86,24 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         var jetEngine = FindObjectOfType<JetEngine>();
         jetEngine.onStrongWind += SpawnCovers;
         jetEngine.onStrongWind += SpawnSpeedBoosts;
-        GameManager.Instance.onGameStart += SpawnCovers;
+        GameManager.Instance.onGameStart += HandleGameStart;
+        SpawnCovers();
         timeForNextObstacle = Random.Range(minTimeForNextObstacle, maxTimeForNextObstacle);
     }
 
     private void OnDestroy()
     {
-        GameManager.Instance.onGameStart -= SpawnCovers;
+        GameManager.Instance.onGameStart -= HandleGameStart;
+    }
+
+    void HandleGameStart()
+    {
+        gameStarted = true;
     }
 
     private void Update()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient || !gameStarted)
             return;
         obstacleTimer += Time.deltaTime;
         if(obstacleTimer>timeForNextObstacle)
@@ -104,12 +112,6 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             obstacleTimer = 0;
             timeForNextObstacle = Random.Range(minTimeForNextObstacle, maxTimeForNextObstacle);
         }
-    }
-
-    void SpawnCoversAndObstacles()
-    {
-        SpawnCovers();
-        SpawnObstacles();
     }
 
     void SpawnCovers()
