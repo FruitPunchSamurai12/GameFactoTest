@@ -13,6 +13,13 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
 
     public UnityEvent onJoinRoom;
 
+    int maxPlayers;
+
+    private void Start()
+    {
+        maxPlayers = FindObjectOfType<Connect>().gameSettings.MaxPlayers;
+    }
+
     public override void OnJoinedRoom()
     {
         onJoinRoom?.Invoke();
@@ -24,7 +31,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsConnected || string.IsNullOrEmpty(roomNameText.text))
             return;
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 5;
+        options.MaxPlayers = (byte)maxPlayers;
         PhotonNetwork.JoinOrCreateRoom(roomNameText.text, options, TypedLobby.Default);
     }
 

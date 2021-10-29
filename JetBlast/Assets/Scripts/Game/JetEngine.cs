@@ -21,6 +21,7 @@ public class JetEngine : MonoBehaviourPunCallbacks
     public bool StrongWind { get; private set; }
     public float TimeLeft => Timer > blowWindThreshold ? blowWindThreshold + blowWindDuration - Timer : blowWindThreshold - Timer;
 
+    public event Action onWindStart;
     public event Action onWindReset;
     public event Action onStrongWind;
 
@@ -50,6 +51,7 @@ public class JetEngine : MonoBehaviourPunCallbacks
     void RPC_HandleGameStart()
     {
         startWind = true;
+        onWindStart?.Invoke();
         audioSource.clip = AudioManager.Instance.GetSoundEffect("Wind");
         audioSource.volume = AudioManager.Instance.sfxON ? 1 : 0;
         audioSource.Play();

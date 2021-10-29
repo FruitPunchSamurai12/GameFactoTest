@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4382044228790862293}
   - component: {fileID: 6342384481213432373}
   - component: {fileID: 5348563529401787349}
+  - component: {fileID: 5452904530252462734}
   m_Layer: 8
   m_Name: Cover
   m_TagString: Untagged
@@ -114,6 +115,22 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!54 &5452904530252462734
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4382044228790862291}
+  serializedVersion: 2
+  m_Mass: 5
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 122
+  m_CollisionDetection: 0
 --- !u!1001 &7788559802894010959
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,4 +9,8 @@ public class GameSettings:ScriptableObject
     [SerializeField]
     string nickName = "Kitsios";
     public string NickName => nickName;
+
+    [SerializeField]
+    int maxPlayers = 5;
+    public int MaxPlayers => maxPlayers;
 }

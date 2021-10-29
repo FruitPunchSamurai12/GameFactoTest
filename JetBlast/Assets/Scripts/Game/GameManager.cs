@@ -16,11 +16,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField]
     CinemachineVirtualCamera virtualCamera;
 
-    int MaxPlayers =2;
+    int MaxPlayers =5;
     int currentPlayersConnected = 0;//THIS IS LOCAL
     int currentPlayersLoaded = 0;//THIS INCREAMENTS ONLY ON THE MASTER CLIENT
     public event Action onGameStart;
     public event Action onLocalPlayerDeath;
+    public event Action<PlayerController> onLocalPlayerLoad;
     public event Action onCountdownStart;
 
     List<PlayerController> playerControllers = new List<PlayerController>();
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         Instance = this;
         AudioManager.Instance.PlayBGMusic("Game");
+        MaxPlayers = PhotonNetwork.CurrentRoom.MaxPlayers;
     }
 
     private void Start()
@@ -52,16 +54,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         playerControllers.Add(pc);
         if (localPlayer)
+        {
             pc.onDeath += HandlePlayerDied;
+            onLocalPlayerLoad?.Invoke(pc);
+        }
         currentPlayersConnected++;
         if (currentPlayersConnected == MaxPlayers)
             photonView.RPC(nameof(RPC_MasterClientAllPlayersLoadSceneReceive), RpcTarget.MasterClient);
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    currentPlayersConnected++;
-        //    if (currentPlayersConnected == MaxPlayers)
-        //        onGameStart?.Invoke();
-        //}
     }
 
     [PunRPC]
@@ -70,8 +69,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         currentPlayersLoaded++;
         if (currentPlayersLoaded == MaxPlayers)
         {
-            //onGameStart?.Invoke();
-            //photonView.RPC(nameof(RPC_AllowInputOnLocalPlayer), RpcTarget.All);
             photonView.RPC(nameof(RPC_StartTimer), RpcTarget.All);
             StartCoroutine(Countdown());
         }
@@ -93,7 +90,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPC_AllowInputOnLocalPlayer()
     {
-        Debug.Log("kitsi");
         PlayerController.LocalPlayerInstance.GetComponent<PlayerController>().HandleGameStart();
     }
 

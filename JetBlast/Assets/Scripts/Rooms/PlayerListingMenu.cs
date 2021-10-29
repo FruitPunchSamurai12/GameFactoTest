@@ -76,6 +76,8 @@ public class PlayerListingMenu : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            if (listings.Count < PhotonNetwork.CurrentRoom.MaxPlayers)
+                return;
             for (int i = 0; i < listings.Count; i++)
             {
                 if(listings[i].Player !=PhotonNetwork.LocalPlayer)

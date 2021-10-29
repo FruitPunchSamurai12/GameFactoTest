@@ -5,6 +5,9 @@ using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 public class WinZone : MonoBehaviourPun
 {
+    [SerializeField]
+    GameObject fireworks;
+
     public event Action<int> onGameEnd;
     private void OnTriggerEnter(Collider other)
     {
@@ -22,6 +25,7 @@ public class WinZone : MonoBehaviourPun
     [PunRPC]
     void RPC_SendGameEndEvent(int winnerPlayerNumber)
     {
+        fireworks.SetActive(true);
         onGameEnd?.Invoke(winnerPlayerNumber);
     }
 }

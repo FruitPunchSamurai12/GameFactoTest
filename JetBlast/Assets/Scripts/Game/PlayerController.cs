@@ -68,6 +68,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public event Action onStunEnd;
     public event Action onRagdoll;
     public event Action onDeath;
+    public event Action onSpeedBoost;
     public event Action<bool> onThrowPunch;
     public static GameObject LocalPlayerInstance { get; private set; }
 
@@ -151,7 +152,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
         {
             if(Physics.Raycast(rayStartPosition.position, transform.forward,checkForVaultRayLength,coverLayerMask))
             {
-                Debug.Log("ktis");
                 Vault();
             }
         }
@@ -291,6 +291,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     IEnumerator SpeedUp()
     {
         currentMaxSpeedModifier = boostMaxSpeedModifier;
+        onSpeedBoost?.Invoke();
         yield return new WaitForSeconds(speedBoostDuration);
         currentMaxSpeedModifier = 1;
     }

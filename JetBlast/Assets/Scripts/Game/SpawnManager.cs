@@ -118,7 +118,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     {
         if (stopSpawningCovers)
             return;
-        int numberOfCoversToSpawn = 4;//GameManager.Instance.PlayersRemaining;      
+        int numberOfCoversToSpawn = GameManager.Instance.PlayersRemaining -1;      
         Vector3[] newCoversPositions = new Vector3[numberOfCoversToSpawn];
         float furthestNewCoverZ = furthestCoverZ;
         for (int i = 0; i < numberOfCoversToSpawn; i++)
@@ -129,7 +129,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                 float randomX = Random.Range(minX, maxX);
                 float randomZ = furthestCoverZ + Random.Range(minDistanceFromFurthestCoverToSpawnCovers, maxDistanceFromFurthestCoverToSpawnCovers);
                 randomZ = Mathf.Clamp(randomZ, 0, maxZPositionCoverOrSpeedBoostCanSpawn);
-                Vector3 newCoverPos = new Vector3(randomX, 0.6f, randomZ);
+                Vector3 newCoverPos = new Vector3(randomX, 20f, randomZ);
                 bool success = true;
                 for (int j = i - 1; j >= 0; j--)
                 {
