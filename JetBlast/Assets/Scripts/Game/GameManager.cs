@@ -10,7 +10,9 @@ using System.Linq;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]
-    GameObject playerPrefab; 
+    GameObject playerPrefab;
+    [SerializeField]
+    GameObject botPrefab;
     [SerializeField]
     List<Transform> playerSpawnPoints = new List<Transform>();
     [SerializeField]
@@ -21,10 +23,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     int currentPlayersLoaded = 0;//THIS INCREAMENTS ONLY ON THE MASTER CLIENT
     public event Action onGameStart;
     public event Action onLocalPlayerDeath;
+    public event Action onAllPlayersLoaded;
     public event Action<PlayerController> onLocalPlayerLoad;
     public event Action onCountdownStart;
 
-    List<PlayerController> playerControllers = new List<PlayerController>();
+    List<PlayerController> playerControllers;
+    public List<AIInput> aiControllers { get; private set; }
 
     public int PlayersRemaining => playerControllers.Count(t => !t.Dead);
     public float LastPlayerZ => PlayersRemaining>0?playerControllers.Where(t=>!t.Dead).Min(t => t.transform.position.z):0;
@@ -36,7 +40,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         Instance = this;
         AudioManager.Instance.PlayBGMusic("Game");
+        playerControllers = new List<PlayerController>();
+        aiControllers = new List<AIInput>();
         MaxPlayers = PhotonNetwork.CurrentRoom.MaxPlayers;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            for (int i = PhotonNetwork.CurrentRoom.PlayerCount; i < MaxPlayers; i++)
+            {
+                var bot= PhotonNetwork.InstantiateRoomObject(botPrefab.name, playerSpawnPoints[i].transform.position, Quaternion.identity);
+                aiControllers.Add(bot.GetComponent<AIInput>());
+            }
+        }
     }
 
     private void Start()
@@ -47,6 +61,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             GameObject p = PhotonNetwork.Instantiate(playerPrefab.name, playerSpawnPoints[index].transform.position, Quaternion.identity);
             virtualCamera.m_Follow = p.transform;           
         }
+        
         FindObjectOfType<WinZone>().onGameEnd += GameEnd;
     }
 
@@ -67,9 +82,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RPC_MasterClientAllPlayersLoadSceneReceive()
     {
         currentPlayersLoaded++;
-        if (currentPlayersLoaded == MaxPlayers)
+        if (currentPlayersLoaded == PhotonNetwork.CurrentRoom.PlayerCount)
         {
             photonView.RPC(nameof(RPC_StartTimer), RpcTarget.All);
+            onAllPlayersLoaded?.Invoke();
             StartCoroutine(Countdown());
         }
     }

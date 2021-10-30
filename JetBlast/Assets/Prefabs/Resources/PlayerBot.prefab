@@ -2975,7 +2975,6 @@ GameObject:
   - component: {fileID: 4749541101938811775}
   - component: {fileID: 1453111464392925826}
   - component: {fileID: 127705291156508117}
-  - component: {fileID: 4406618014420046712}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3030,7 +3029,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Kitsios
+  m_text: Bot
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3099,18 +3098,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &4406618014420046712
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4034670772452550135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbc432d5bd57bce45b868edf6ce10001, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4097466527480707634
 GameObject:
   m_ObjectHideFlags: 0
@@ -3797,6 +3784,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5381080741441471854}
+  - component: {fileID: 3163988486748376461}
   - component: {fileID: 2039388151883849492}
   - component: {fileID: 7078523031185254528}
   - component: {fileID: 2663395820520112636}
@@ -3807,9 +3795,8 @@ GameObject:
   - component: {fileID: 387037557}
   - component: {fileID: -6480530758727538262}
   - component: {fileID: 6298446568471751164}
-  - component: {fileID: 5086282636265600024}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerBot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3833,6 +3820,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3163988486748376461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4748659603869327316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68547b588becd3d44a1201a9be239dba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCoverPosition: {x: 0, y: 0, z: 0}
 --- !u!95 &2039388151883849492
 Animator:
   serializedVersion: 3
@@ -3862,7 +3862,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.89619124, z: 0}
@@ -3937,7 +3937,7 @@ MonoBehaviour:
   stunDuration: 1
   boostMaxSpeedModifier: 1.5
   speedBoostDuration: 3
-  isHumanPlayer: 1
+  isHumanPlayer: 0
 --- !u!114 &6559926557311160792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4117,18 +4117,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c9290e115cbcb04295fbae3c2d5eab5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5086282636265600024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4748659603869327316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bcc2ec5b3d07e245b7eda256b19fb74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4816498398279967729

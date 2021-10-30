@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameVersion: 0.0.0
   nickName: Kitsios
+  maxPlayers: 5

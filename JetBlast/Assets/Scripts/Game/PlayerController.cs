@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     float deacceleration = 20f;
     [SerializeField]
     float leftRightInputOffset = 20f;
+    public float LeftRightInputOffset => leftRightInputOffset;//used by the ai
     
     [Header("Vault things")]
     [SerializeField]
@@ -50,6 +51,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField]
     float speedBoostDuration = 3f;
 
+
+    [SerializeField]
+    bool isHumanPlayer;
+
     public bool Stunned { get; private set; }
 
     public bool Moving => playerInput.Move;
@@ -66,6 +71,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public event Action onVault;
     public event Action<PlayerController> onPushed;
     public event Action onStunEnd;
+    public event Action<bool> onCover;
     public event Action onRagdoll;
     public event Action onDeath;
     public event Action onSpeedBoost;
@@ -78,7 +84,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Camera cam;
     Rigidbody rb;
     Rigidbody[] ragdollRigidBodies;
-    PlayerInput playerInput = new PlayerInput();
+    IPlayerInput playerInput;
     float startYPosition;//used when getting up after being pushed
     bool gameStarted = false;
 
@@ -89,19 +95,24 @@ public class PlayerController : MonoBehaviourPunCallbacks
         ragdollRigidBodies = ragdoll.GetComponentsInChildren<Rigidbody>();
         ragdoll.SetActive(false);
         startYPosition = transform.position.y;
-        if (photonView.IsMine)
+        playerInput = GetComponent<IPlayerInput>();
+        if (photonView.IsMine && isHumanPlayer)
             LocalPlayerInstance = gameObject;
     }
 
     private void Start()
     {
-        GameManager.Instance.AddPlayerController(this,photonView.IsMine);
+        GameManager.Instance.AddPlayerController(this,photonView.IsMine && isHumanPlayer);
+        if (!isHumanPlayer)
+            GameManager.Instance.onGameStart += HandleGameStart;
     }
 
     private void OnDestroy()
     {
         if (photonView.IsMine)
             LocalPlayerInstance = null;
+        if (!isHumanPlayer)
+            GameManager.Instance.onGameStart -= HandleGameStart;
     }
 
 
@@ -109,7 +120,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine && isHumanPlayer)
             return;
         if (Dead || Stunned || !gameStarted)
             return;
@@ -143,7 +154,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     private void FixedUpdate()
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine && isHumanPlayer)
             return;
         if (Dead || Stunned ||!gameStarted)
             return;
@@ -167,6 +178,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             animatedModel.SetActive(false);
             ragdoll.SetActive(true);
             onRagdoll?.Invoke();
+            StopAllCoroutines();
         }
         if (PhotonNetwork.IsMasterClient)
             force = force / 2f;//i dont know why but on the master client the ragdoll travels much higher in the air than in the other clients
@@ -180,6 +192,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public void InCoverRange(bool inCoverRange)
     {
         InCover = inCoverRange;
+        onCover?.Invoke(InCover);
+
     }
 
     public void Vault()
@@ -200,9 +214,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (!photonView.IsMine)
             return;
         PlayerController pc = other.GetComponent<PlayerController>();
-        if(pc!=null && pc!=this)
+        if(pc!=null && pc!=this && !pc.Dead && !pc.Stunned)
         {
-            if(InCover && !Moving)
+            if(InCover && !Moving && !Dead)
             {
                 GetPunched(pc);
             }

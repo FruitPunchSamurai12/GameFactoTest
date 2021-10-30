@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4748659603869327316, guid: 3b8024a8e3624d548b6a1a27575d1f6e, type: 3}
+  botPrefab: {fileID: 4748659603869327316, guid: 240c34c245ba59f4496ca2d7895e30a5, type: 3}
   playerSpawnPoints:
   - {fileID: 0}
   - {fileID: 0}

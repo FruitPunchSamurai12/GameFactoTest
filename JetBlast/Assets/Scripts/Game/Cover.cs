@@ -4,11 +4,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class Cover : PooledMonoBehaviour
 {
     bool occupied = false;
     int occupiedPlayerID = -1;
     PlayerController occupiedPlayer = null;
+    Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+    }
 
     private void OnTriggerEnter(Collider other)
     {

@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Random = UnityEngine.Random;
 
 //THIS WAS INCREDIBLY DIFFICULT TO MAKE IT WORK
 public class SpawnManager : MonoBehaviourPunCallbacks
@@ -54,8 +55,10 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     [SerializeField]
     float maxZDistanceOfSpeedBoostsFromLastPlayer = 48;
 
-    Dictionary<PooledMonoBehaviour, Vector3> speedBoostsPositions = new Dictionary<PooledMonoBehaviour, Vector3>();
+    public event Action<Vector3[]> onNewCoversSpawn;
+    public event Action onStopSpawningCovers;
 
+    Dictionary<PooledMonoBehaviour, Vector3> speedBoostsPositions = new Dictionary<PooledMonoBehaviour, Vector3>();
 
     float minDistanceBetweenCoversSquared;
     float minDistanceBetweenSpeedBoostsSquared;
@@ -87,13 +90,14 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         jetEngine.onStrongWind += SpawnCovers;
         jetEngine.onStrongWind += SpawnSpeedBoosts;
         GameManager.Instance.onGameStart += HandleGameStart;
-        SpawnCovers();
+        GameManager.Instance.onAllPlayersLoaded += SpawnCovers;
         timeForNextObstacle = Random.Range(minTimeForNextObstacle, maxTimeForNextObstacle);
     }
 
     private void OnDestroy()
     {
         GameManager.Instance.onGameStart -= HandleGameStart;
+        GameManager.Instance.onAllPlayersLoaded -= SpawnCovers;
     }
 
     void HandleGameStart()
@@ -117,8 +121,17 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     void SpawnCovers()
     {
         if (stopSpawningCovers)
+        {
+            onStopSpawningCovers?.Invoke();
             return;
-        int numberOfCoversToSpawn = GameManager.Instance.PlayersRemaining -1;      
+        }
+        int numberOfCoversToSpawn = GameManager.Instance.PlayersRemaining -1;
+        if (numberOfCoversToSpawn <= 0)
+        {
+            stopSpawningCovers = true;
+            return;
+        }
+        Debug.Log(numberOfCoversToSpawn);
         Vector3[] newCoversPositions = new Vector3[numberOfCoversToSpawn];
         float furthestNewCoverZ = furthestCoverZ;
         for (int i = 0; i < numberOfCoversToSpawn; i++)
@@ -158,6 +171,12 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         {
             if (newCoversPositions[i] != Vector3.zero)
                 coverPrefab.Get<PooledMonoBehaviour>(newCoversPositions[i], Quaternion.identity);
+        }
+        int coverIndex = 0;
+        foreach (var ai in GameManager.Instance.aiControllers)
+        {
+            ai.SetCoverTarget(newCoversPositions[coverIndex]);
+            coverIndex = Mathf.Clamp(coverIndex + 1, 0, newCoversPositions.Length - 1);
         }
     }
 
